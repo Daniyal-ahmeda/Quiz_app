@@ -22,9 +22,11 @@ class _CreateQuizPageState extends State<CreateQuizPage> {
   final _quizService = locator<QuizService>();
 
   void _addQuestion() {
-    showDialog(
+    showModalBottomSheet(
       context: context,
-      builder: (context) => const AddQuestionDialog(),
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => const AddQuestionSheet(),
     ).then((value) {
       if (value != null && value is Question) {
         setState(() {
@@ -38,7 +40,9 @@ class _CreateQuizPageState extends State<CreateQuizPage> {
     if (_titleController.text.isEmpty || _questions.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-            content: Text('Please enter a title and at least one question.')),
+          content: Text('Please enter a title and at least one question.'),
+          backgroundColor: AppColors.red,
+        ),
       );
       return;
     }
@@ -57,166 +61,387 @@ class _CreateQuizPageState extends State<CreateQuizPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Create Quiz',
-            style: GoogleFonts.poppins(
-                color: Colors.black, fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.white,
+        title: Text(
+          'Create Quiz',
+          style: GoogleFonts.poppins(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: Colors.transparent,
         elevation: 0,
+        centerTitle: true,
         iconTheme: const IconThemeData(color: Colors.black),
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: Color(0xFFF8F9FA),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextField(
+            _buildSectionHeader('Quiz Details'),
+            const SizedBox(height: 10),
+            _buildTextField(
               controller: _titleController,
-              decoration: const InputDecoration(
-                labelText: 'Quiz Title',
-                border: OutlineInputBorder(),
-              ),
+              label: 'Quiz Title',
+              icon: Icons.title,
             ),
             const SizedBox(height: 16),
-            TextField(
+            _buildTextField(
               controller: _descriptionController,
-              decoration: const InputDecoration(
-                labelText: 'Description',
-                border: OutlineInputBorder(),
-              ),
+              label: 'Description',
+              icon: Icons.description,
+              maxLines: 2,
             ),
             const SizedBox(height: 24),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Questions (${_questions.length})',
+                _buildSectionHeader('Questions (${_questions.length})'),
+                TextButton.icon(
+                  onPressed: _addQuestion,
+                  icon: const Icon(Icons.add_circle, color: AppColors.blue2),
+                  label: Text(
+                    'Add New',
                     style: GoogleFonts.poppins(
-                        fontSize: 18, fontWeight: FontWeight.bold)),
-                IconButton(
-                    onPressed: _addQuestion,
-                    icon: const Icon(Icons.add_circle,
-                        color: AppColors.blue2, size: 30)),
-              ],
-            ),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: _questions.length,
-              itemBuilder: (context, index) {
-                final q = _questions[index];
-                return Card(
-                  margin: const EdgeInsets.symmetric(vertical: 8),
-                  child: ListTile(
-                    title: Text(q.question),
-                    subtitle: Text('Answer: ${q.answer}'),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete, color: Colors.red),
-                      onPressed: () {
-                        setState(() {
-                          _questions.removeAt(index);
-                        });
-                      },
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.blue2,
                     ),
                   ),
-                );
-              },
+                ),
+              ],
             ),
+            const SizedBox(height: 10),
+            if (_questions.isEmpty)
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(40),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.grey.shade200),
+                ),
+                child: Column(
+                  children: [
+                    Icon(Icons.quiz_outlined,
+                        size: 60, color: Colors.grey.shade300),
+                    const SizedBox(height: 10),
+                    Text(
+                      'No questions added yet',
+                      style: GoogleFonts.poppins(
+                          color: Colors.grey.shade500, fontSize: 16),
+                    ),
+                  ],
+                ),
+              )
+            else
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: _questions.length,
+                itemBuilder: (context, index) {
+                  final q = _questions[index];
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.04),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.all(16),
+                      leading: Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: AppColors.blue4.withOpacity(0.4),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Text(
+                          '${index + 1}',
+                          style: const TextStyle(
+                            color: AppColors.blue2,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      title: Text(
+                        q.question,
+                        style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      subtitle: Padding(
+                        padding: const EdgeInsets.only(top: 6),
+                        child: Text(
+                          'Answer: ${q.answer}',
+                          style: TextStyle(color: Colors.green[700]),
+                        ),
+                      ),
+                      trailing: IconButton(
+                        icon: const Icon(Icons.delete_outline,
+                            color: AppColors.red),
+                        onPressed: () {
+                          setState(() {
+                            _questions.removeAt(index);
+                          });
+                        },
+                      ),
+                    ),
+                  );
+                },
+              ),
             const SizedBox(height: 30),
-            Mainbutton(
-              text: 'Save Quiz',
-              ontap: _saveQuiz,
-              backgroundColor: AppColors.blue2,
-              textcolor: Colors.white,
+            SizedBox(
+              width: double.infinity,
+              height: 55,
+              child: Mainbutton(
+                text: 'Save Quiz',
+                ontap: _saveQuiz,
+                backgroundColor: AppColors.blue2,
+                textcolor: Colors.white,
+              ),
             ),
           ],
         ),
       ),
     );
   }
+
+  Widget _buildSectionHeader(String title) {
+    return Text(
+      title,
+      style: GoogleFonts.poppins(
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+        color: AppColors.blue1,
+      ),
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+    int maxLines = 1,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: TextField(
+        controller: controller,
+        maxLines: maxLines,
+        decoration: InputDecoration(
+          labelText: label,
+          prefixIcon: Icon(icon, color: AppColors.blue2),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide.none,
+          ),
+          filled: true,
+          fillColor: Colors.white,
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        ),
+      ),
+    );
+  }
 }
 
-class AddQuestionDialog extends StatefulWidget {
-  const AddQuestionDialog({super.key});
+class AddQuestionSheet extends StatefulWidget {
+  const AddQuestionSheet({super.key});
 
   @override
-  State<AddQuestionDialog> createState() => _AddQuestionDialogState();
+  State<AddQuestionSheet> createState() => _AddQuestionSheetState();
 }
 
-class _AddQuestionDialogState extends State<AddQuestionDialog> {
+class _AddQuestionSheetState extends State<AddQuestionSheet> {
   final _questionController = TextEditingController();
-  final _option1Controller = TextEditingController();
-  final _option2Controller = TextEditingController();
-  final _option3Controller = TextEditingController();
-  final _option4Controller = TextEditingController();
+  final List<TextEditingController> _optionControllers =
+      List.generate(4, (_) => TextEditingController());
   int _correctAnswerIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('Add Question'),
-      content: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: _questionController,
-              decoration: const InputDecoration(labelText: 'Question Text'),
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.85,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+      ),
+      padding: EdgeInsets.fromLTRB(
+          20, 20, 20, MediaQuery.of(context).viewInsets.bottom + 20),
+      child: Column(
+        children: [
+          Container(
+            width: 50,
+            height: 5,
+            decoration: BoxDecoration(
+              color: Colors.grey.shade300,
+              borderRadius: BorderRadius.circular(10),
             ),
-            const SizedBox(height: 10),
-            TextField(
-                controller: _option1Controller,
-                decoration: const InputDecoration(labelText: 'Option 1')),
-            TextField(
-                controller: _option2Controller,
-                decoration: const InputDecoration(labelText: 'Option 2')),
-            TextField(
-                controller: _option3Controller,
-                decoration: const InputDecoration(labelText: 'Option 3')),
-            TextField(
-                controller: _option4Controller,
-                decoration: const InputDecoration(labelText: 'Option 4')),
-            const SizedBox(height: 20),
-            const Text('Correct Answer:'),
-            DropdownButton<int>(
-              value: _correctAnswerIndex,
-              items: const [
-                DropdownMenuItem(value: 0, child: Text('Option 1')),
-                DropdownMenuItem(value: 1, child: Text('Option 2')),
-                DropdownMenuItem(value: 2, child: Text('Option 3')),
-                DropdownMenuItem(value: 3, child: Text('Option 4')),
+          ),
+          const SizedBox(height: 20),
+          Text(
+            'Add New Question',
+            style: GoogleFonts.poppins(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: AppColors.blue1,
+            ),
+          ),
+          const SizedBox(height: 20),
+          Expanded(
+            child: ListView(
+              children: [
+                _buildInputField(
+                    _questionController, 'Question Text', Icons.help_outline),
+                const SizedBox(height: 20),
+                Text(
+                  'Options',
+                  style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.w600, color: Colors.grey[700]),
+                ),
+                const SizedBox(height: 10),
+                ...List.generate(4, (index) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: _correctAnswerIndex == index
+                            ? AppColors.blue4.withOpacity(0.3)
+                            : Colors.grey.shade50,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: _correctAnswerIndex == index
+                              ? AppColors.blue2
+                              : Colors.grey.shade200,
+                          width: _correctAnswerIndex == index ? 2 : 1,
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Radio<int>(
+                            value: index,
+                            groupValue: _correctAnswerIndex,
+                            activeColor: AppColors.blue2,
+                            onChanged: (val) {
+                              setState(() {
+                                _correctAnswerIndex = val!;
+                              });
+                            },
+                          ),
+                          Expanded(
+                            child: TextField(
+                              controller: _optionControllers[index],
+                              decoration: InputDecoration(
+                                hintText: 'Option ${index + 1}',
+                                border: InputBorder.none,
+                                contentPadding:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }),
               ],
-              onChanged: (val) {
-                setState(() {
-                  _correctAnswerIndex = val!;
-                });
-              },
             ),
-          ],
+          ),
+          const SizedBox(height: 20),
+          Row(
+            children: [
+              Expanded(
+                child: TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                  ),
+                  child: Text(
+                    'Cancel',
+                    style: GoogleFonts.poppins(
+                        color: Colors.grey, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 15),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: _saveQuestion,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.blue2,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                  ),
+                  child: Text(
+                    'Add Question',
+                    style: GoogleFonts.poppins(
+                        fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInputField(
+      TextEditingController controller, String hint, IconData icon) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: TextField(
+        controller: controller,
+        decoration: InputDecoration(
+          hintText: hint,
+          prefixIcon: Icon(icon, color: Colors.grey),
+          border: InputBorder.none,
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         ),
       ),
-      actions: [
-        TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel')),
-        ElevatedButton(
-          onPressed: () {
-            if (_questionController.text.isNotEmpty) {
-              final options = [
-                _option1Controller.text,
-                _option2Controller.text,
-                _option3Controller.text,
-                _option4Controller.text
-              ];
-              final q = Question(
-                question: _questionController.text,
-                options: options,
-                answer: options[_correctAnswerIndex],
-              );
-              Navigator.pop(context, q);
-            }
-          },
-          child: const Text('Add'),
-        ),
-      ],
     );
+  }
+
+  void _saveQuestion() {
+    if (_questionController.text.isNotEmpty &&
+        _optionControllers.every((c) => c.text.isNotEmpty)) {
+      final options = _optionControllers.map((c) => c.text).toList();
+      final q = Question(
+        question: _questionController.text,
+        options: options,
+        answer: options[_correctAnswerIndex],
+      );
+      Navigator.pop(context, q);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill all fields')),
+      );
+    }
   }
 }

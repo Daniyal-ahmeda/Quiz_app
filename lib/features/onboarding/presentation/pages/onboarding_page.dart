@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:quiz_app/core/constants/app_colors.dart';
-import 'package:quiz_app/core/constants/app_icons.dart';
 import 'package:quiz_app/core/utils/screen_utils.dart';
 import 'package:quiz_app/core/widgets/common_button.dart';
 import 'package:quiz_app/features/quiz/presentation/pages/home_page.dart';
@@ -25,30 +24,29 @@ class _OnboardingPageState extends State<OnboardingPage> {
             padding: const EdgeInsets.all(20.0),
             child: Column(
               children: [
-                Image.asset(
-                  AppIcons.logo,
-                  height: getScreenSize(context).height * 0.32,
-                  width: getScreenSize(context).width * 0.65,
+                SizedBox(height: getScreenSize(context).height * 0.05),
+                Container(
+                  padding: const EdgeInsets.all(30),
+                  decoration: BoxDecoration(
+                    color: AppColors.blue4.withOpacity(0.2),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.science_rounded,
+                    size: 100,
+                    color: AppColors.blue2,
+                  ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(width: getScreenSize(context).width * 0.09),
-                    Text(
-                      'Quiz',
-                      style: GoogleFonts.poppins(
-                        fontSize: 40,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                    SizedBox(width: getScreenSize(context).width * 0.02),
-                    Image.asset(
-                      AppIcons.cup,
-                      height: getScreenSize(context).height * 0.1,
-                      width: getScreenSize(context).height * 0.1,
-                    ),
-                  ],
+                SizedBox(height: getScreenSize(context).height * 0.03),
+                Text(
+                  'Scientific Quizzes',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.poppins(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.blue1,
+                    height: 1.2,
+                  ),
                 ),
                 SizedBox(height: getScreenSize(context).height * 0.02),
               ],
@@ -98,7 +96,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                       vertical: 15,
                     ),
                     ontap: () {
-                      Navigator.pushReplacement(
+                      Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => const HomePage()),

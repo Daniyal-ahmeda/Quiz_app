@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:quiz_app/core/constants/app_icons.dart';
-import 'package:quiz_app/core/utils/screen_utils.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:quiz_app/core/constants/app_colors.dart';
 import 'package:quiz_app/features/onboarding/presentation/pages/onboarding_page.dart';
 
 class SplashPage extends StatefulWidget {
@@ -15,10 +15,10 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-    Timer(Duration(seconds: 3), () {
+    Timer(const Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => OnboardingPage()),
+        MaterialPageRoute(builder: (context) => const OnboardingPage()),
       );
     });
   }
@@ -31,10 +31,26 @@ class _SplashPageState extends State<SplashPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image(
-              image: AssetImage(AppIcons.logo),
-              width: getScreenSize(context).width * 0.8,
-              height: getScreenSize(context).height * 0.9,
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: AppColors.blue4.withOpacity(0.3),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.science,
+                size: 80,
+                color: AppColors.blue2,
+              ),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              'Scientific Quizzes',
+              style: GoogleFonts.poppins(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: AppColors.blue1,
+              ),
             ),
           ],
         ),

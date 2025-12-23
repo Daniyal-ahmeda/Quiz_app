@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:quiz_app/core/constants/app_colors.dart';
-import 'package:quiz_app/core/utils/screen_utils.dart';
-import 'package:quiz_app/core/widgets/common_button.dart';
 import 'package:quiz_app/features/quiz/data/models/quiz_model.dart';
 import 'package:quiz_app/features/quiz/presentation/pages/result_page.dart';
 import 'package:quiz_app/features/quiz/presentation/pages/right_page.dart';
@@ -43,7 +41,15 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 
   void _submitAnswer() {
-    if (_selectedChoice == -1) return;
+    if (_selectedChoice == -1) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please select an option'),
+          backgroundColor: AppColors.blue2,
+        ),
+      );
+      return;
+    }
 
     final currentQuestion = widget.quiz.questions[_currentQuestionIndex];
     final isCorrect =
@@ -76,54 +82,79 @@ class _QuizScreenState extends State<QuizScreen> {
       appBar: AppBar(
         title: Text(
           widget.quiz.title,
-          style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.bold),
+          style: GoogleFonts.poppins(
+              fontSize: 20, fontWeight: FontWeight.w600, color: Colors.black),
         ),
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 0,
         foregroundColor: Colors.black,
+        leading: IconButton(
+          icon: const Icon(Icons.close),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            LinearProgressIndicator(
-              value: (_currentQuestionIndex + 1) / widget.quiz.questions.length,
-              backgroundColor: AppColors.blue4,
-              minHeight: 17,
-              color: AppColors.blue2,
-              borderRadius: const BorderRadius.all(Radius.circular(10)),
+            Container(
+              height: 12,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: AppColors.blue4.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: FractionallySizedBox(
+                alignment: Alignment.centerLeft,
+                widthFactor:
+                    (_currentQuestionIndex + 1) / widget.quiz.questions.length,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.blue2,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+              ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 20),
             Row(
               children: [
                 Text(
-                  '${_currentQuestionIndex + 1}/',
-                  style: const TextStyle(
-                      color: AppColors.blue2,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20),
+                  'Question ${_currentQuestionIndex + 1}',
+                  style: GoogleFonts.poppins(
+                    color: AppColors.blue2,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
                 ),
                 Text(
-                  widget.quiz.questions.length.toString(),
-                  style: const TextStyle(
-                      color: AppColors.blue4,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20),
+                  '/${widget.quiz.questions.length}',
+                  style: GoogleFonts.poppins(
+                    color: Colors.grey,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 18,
+                  ),
                 )
               ],
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 24),
             Text(
               currentQuestion.question,
               style: GoogleFonts.poppins(
-                  fontSize: 20, fontWeight: FontWeight.bold),
+                fontSize: 22,
+                fontWeight: FontWeight.w600,
+                color: AppColors.blue1,
+                height: 1.3,
+              ),
             ),
-            SizedBox(height: getScreenSize(context).height * 0.05),
+            const SizedBox(height: 32),
             Expanded(
-              child: ListView.builder(
+              child: ListView.separated(
                 itemCount: currentQuestion.options.length,
+                separatorBuilder: (context, index) =>
+                    const SizedBox(height: 12),
                 itemBuilder: (context, index) => ChoiceTile(
                   text: currentQuestion.options[index],
                   isSelected: _selectedChoice == index,
@@ -133,18 +164,30 @@ class _QuizScreenState extends State<QuizScreen> {
                 ),
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 20),
             SizedBox(
               width: double.infinity,
-              child: Mainbutton(
-                text: 'Next',
-                ontap: _submitAnswer,
-                backgroundColor: AppColors.blue2,
-                textcolor: Colors.white,
-                paddingbutten: const EdgeInsets.symmetric(vertical: 16.0),
-                textsize: 16.0,
+              height: 56,
+              child: ElevatedButton(
+                onPressed: _submitAnswer,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.blue2,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                child: Text(
+                  'Confirm Answer',
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
               ),
-            )
+            ),
+            const SizedBox(height: 16),
           ],
         ),
       ),

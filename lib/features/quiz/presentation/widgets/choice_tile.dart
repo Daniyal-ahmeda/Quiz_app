@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:quiz_app/core/constants/app_colors.dart';
 
 class ChoiceTile extends StatelessWidget {
@@ -7,6 +8,7 @@ class ChoiceTile extends StatelessWidget {
   final VoidCallback onTap;
 
   const ChoiceTile({
+    super.key,
     required this.text,
     required this.isSelected,
     required this.onTap,
@@ -16,36 +18,54 @@ class ChoiceTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: 6),
-        padding: EdgeInsets.symmetric(vertical: 18, horizontal: 16),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeInOut,
+        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.blue4 : Colors.white,
-          borderRadius: BorderRadius.circular(18),
-          border:
-              Border.all(color: isSelected ? AppColors.blue2 : AppColors.blue4),
+          color: isSelected ? AppColors.blue4.withOpacity(0.3) : Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: isSelected ? AppColors.blue2 : Colors.grey.shade200,
+            width: isSelected ? 2 : 1.5,
+          ),
+          boxShadow: [
+            if (!isSelected)
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+          ],
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              text,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: isSelected ? AppColors.blue2 : Colors.black,
+            Container(
+              width: 24,
+              height: 24,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: isSelected ? AppColors.blue2 : Colors.grey.shade400,
+                  width: 2,
+                ),
+                color: isSelected ? AppColors.blue2 : Colors.transparent,
+              ),
+              child: isSelected
+                  ? const Icon(Icons.check, size: 16, color: Colors.white)
+                  : null,
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Text(
+                text,
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                  color: isSelected ? AppColors.blue2 : Colors.black87,
+                ),
               ),
             ),
-            if (isSelected)
-              Icon(
-                Icons.check_circle,
-                color: AppColors.blue2,
-              )
-            else
-              Icon(
-                Icons.circle_outlined,
-                color: Colors.black,
-              ),
           ],
         ),
       ),
