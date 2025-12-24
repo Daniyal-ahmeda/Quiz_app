@@ -41,6 +41,8 @@ dependencies:
   get_it: ^8.0.3
   shared_preferences: ^2.5.1
   confetti: ^0.8.0
+  http: ^1.6.0
+  flutter_dotenv: ^5.2.1
 
 dev_dependencies:
   flutter_test:
@@ -67,6 +69,8 @@ flutter:
   assets:
     - assets/icons/
     - assets/audio/
+    - assets/data/quiz_data.json
+    - .env
     - assets/
   #   - images/a_dot_ham.jpeg
 

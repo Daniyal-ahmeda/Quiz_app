@@ -50,6 +50,7 @@ class _CreateQuizPageState extends State<CreateQuizPage> {
     final quiz = Quiz(
       title: _titleController.text,
       description: _descriptionController.text,
+      category: 'General',
       questions: _questions,
     );
 

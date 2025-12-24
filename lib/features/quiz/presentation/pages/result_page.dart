@@ -65,7 +65,7 @@ class ResultScreen extends StatelessWidget {
                 style: GoogleFonts.poppins(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                  color: Colors.white,
                 ),
               ),
               SizedBox(height: getScreenSize(context).height * 0.07),

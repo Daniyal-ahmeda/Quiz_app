@@ -78,21 +78,40 @@ class _QuizScreenState extends State<QuizScreen> {
     final currentQuestion = widget.quiz.questions[_currentQuestionIndex];
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
           widget.quiz.title,
           style: GoogleFonts.poppins(
-              fontSize: 20, fontWeight: FontWeight.w600, color: Colors.black),
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Colors.white
+                : Colors.black,
+          ),
         ),
         centerTitle: true,
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         elevation: 0,
-        foregroundColor: Colors.black,
-        leading: IconButton(
-          icon: const Icon(Icons.close),
-          onPressed: () => Navigator.pop(context),
-        ),
+        foregroundColor: Theme.of(context).brightness == Brightness.dark
+            ? Colors.white
+            : Colors.black,
+        automaticallyImplyLeading: false,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(
+                'Quit',
+                style: GoogleFonts.poppins(
+                  color: AppColors.red,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16),
@@ -132,7 +151,9 @@ class _QuizScreenState extends State<QuizScreen> {
                 Text(
                   '/${widget.quiz.questions.length}',
                   style: GoogleFonts.poppins(
-                    color: Colors.grey,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.grey[400]
+                        : Colors.grey,
                     fontWeight: FontWeight.w600,
                     fontSize: 18,
                   ),
@@ -145,7 +166,9 @@ class _QuizScreenState extends State<QuizScreen> {
               style: GoogleFonts.poppins(
                 fontSize: 22,
                 fontWeight: FontWeight.w600,
-                color: AppColors.blue1,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white
+                    : AppColors.blue1,
                 height: 1.3,
               ),
             ),

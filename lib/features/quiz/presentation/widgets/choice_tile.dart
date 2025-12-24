@@ -23,10 +23,18 @@ class ChoiceTile extends StatelessWidget {
         curve: Curves.easeInOut,
         padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.blue4.withOpacity(0.3) : Colors.white,
+          color: isSelected
+              ? AppColors.blue4.withOpacity(0.3)
+              : (Theme.of(context).brightness == Brightness.dark
+                  ? Colors.grey[800]
+                  : Colors.white),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isSelected ? AppColors.blue2 : Colors.grey.shade200,
+            color: isSelected
+                ? AppColors.blue2
+                : (Theme.of(context).brightness == Brightness.dark
+                    ? Colors.grey[700]!
+                    : Colors.grey.shade200),
             width: isSelected ? 2 : 1.5,
           ),
           boxShadow: [
@@ -62,7 +70,11 @@ class ChoiceTile extends StatelessWidget {
                 style: GoogleFonts.poppins(
                   fontSize: 16,
                   fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                  color: isSelected ? AppColors.blue2 : Colors.black87,
+                  color: isSelected
+                      ? AppColors.blue2
+                      : (Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : Colors.black87),
                 ),
               ),
             ),

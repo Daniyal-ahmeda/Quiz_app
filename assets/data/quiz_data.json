@@ -1,0 +1,246 @@
+[
+  {
+    "id": "1",
+    "title": "Flutter Basics",
+    "description": "Test your knowledge on Flutter history and basics.",
+    "category": "Programming",
+    "questions": [
+      {
+        "id": "q1",
+        "question": "When was Flutter introduced by Google?",
+        "options": ["2015", "2017", "2018", "2019"],
+        "answer": "2017"
+      },
+      {
+        "id": "q2",
+        "question": "What is the latest version of Flutter?",
+        "options": ["1.0.0", "1.5.4", "2.0.0", "2.2.0"],
+        "answer": "1.0.0"
+      },
+      {
+        "id": "q3",
+        "question": "What is the programming language used in Flutter?",
+        "options": ["Dart", "Java", "Kotlin", "Swift"],
+        "answer": "Dart"
+      },
+      {
+        "id": "q4",
+        "question": "What is the name of the first Flutter stable version?",
+        "options": ["Sky", "Star", "Sun", "Moon"],
+        "answer": "Sky"
+      }
+    ]
+  },
+  {
+    "id": "2",
+    "title": "Dart Fundamentals",
+    "description": "Check how well you know the Dart language.",
+    "category": "Programming",
+    "questions": [
+      {
+        "id": "dq1",
+        "question": "Is Dart strictly typed?",
+        "options": ["Yes", "No", "Partially", "Ideally"],
+        "answer": "Yes"
+      },
+      {
+        "id": "dq2",
+        "question": "Which keyword is used to define a constant?",
+        "options": ["var", "final", "const", "let"],
+        "answer": "const"
+      }
+    ]
+  },
+  {
+    "id": "prog3",
+    "title": "Python 101",
+    "description": "Introductory questions for Python developers.",
+    "category": "Programming",
+    "questions": [
+      {
+        "id": "py1",
+        "question": "How do you output text to the console in Python?",
+        "options": ["console.log()", "print()", "System.out.println()", "echo"],
+        "answer": "print()"
+      },
+      {
+        "id": "py2",
+        "question": "Which symbol is used for comments in Python?",
+        "options": ["//", "/*", "#", "--"],
+        "answer": "#"
+      },
+      {
+        "id": "py3",
+        "question": "What is the correct file extension for Python files?",
+        "options": [".java", ".py", ".ptr", ".p"],
+        "answer": ".py"
+      }
+    ]
+  },
+  {
+    "id": "prog4",
+    "title": "Web Development",
+    "description": "HTML, CSS, and JavaScript basics.",
+    "category": "Programming",
+    "questions": [
+      {
+        "id": "web1",
+        "question": "What does HTML stand for?",
+        "options": ["Hyper Text Markup Language", "Home Tool Markup Language", "Hyperlinks and Text Markup Language", "Hyper Tool Multi Language"],
+        "answer": "Hyper Text Markup Language"
+      },
+      {
+        "id": "web2",
+        "question": "Which HTML tag is used to define an internal style sheet?",
+        "options": ["<script>", "<style>", "<css>", "<link>"],
+        "answer": "<style>"
+      }
+    ]
+  },
+  {
+    "id": "3",
+    "title": "Solar System",
+    "description": "Explore the wonders of our solar system.",
+    "category": "Science",
+    "questions": [
+      {
+        "id": "sq1",
+        "question": "Which planet is known as the Red Planet?",
+        "options": ["Earth", "Mars", "Jupiter", "Venus"],
+        "answer": "Mars"
+      },
+      {
+        "id": "sq2",
+        "question": "What is the largest planet in our solar system?",
+        "options": ["Saturn", "Jupiter", "Uranus", "Neptune"],
+        "answer": "Jupiter"
+      },
+      {
+        "id": "sq3",
+        "question": "Which planet is closest to the Sun?",
+        "options": ["Mercury", "Venus", "Earth", "Mars"],
+        "answer": "Mercury"
+      }
+    ]
+  },
+  {
+    "id": "sci2",
+    "title": "Physics: Mechanics",
+    "description": "Motion, forces, and energy.",
+    "category": "Science",
+    "questions": [
+      {
+        "id": "phy1",
+        "question": "What is the unit of Force?",
+        "options": ["Joule", "Watt", "Newton", "Pascal"],
+        "answer": "Newton"
+      },
+      {
+        "id": "phy2",
+        "question": "What implies that 'For every action, there is an equal and opposite reaction'?",
+        "options": ["Newton's 1st Law", "Newton's 2nd Law", "Newton's 3rd Law", "Einstein's Theory"],
+        "answer": "Newton's 3rd Law"
+      }
+    ]
+  },
+  {
+    "id": "sci3",
+    "title": "Biology: Human Body",
+    "description": "Anatomy and physiology basics.",
+    "category": "Science",
+    "questions": [
+      {
+        "id": "bio1",
+        "question": "What is the largest organ in the human body?",
+        "options": ["Liver", "Brain", "Heart", "Skin"],
+        "answer": "Skin"
+      },
+      {
+        "id": "bio2",
+        "question": "How many bones are in the adult human body?",
+        "options": ["206", "250", "300", "198"],
+        "answer": "206"
+      }
+    ]
+  },
+  {
+    "id": "4",
+    "title": "World History",
+    "description": "Test your knowledge of major historical events.",
+    "category": "History",
+    "questions": [
+      {
+        "id": "hq1",
+        "question": "In which year did World War II end?",
+        "options": ["1940", "1945", "1950", "1939"],
+        "answer": "1945"
+      },
+      {
+        "id": "hq2",
+        "question": "Who was the first President of the United States?",
+        "options": ["Thomas Jefferson", "Abraham Lincoln", "George Washington", "John Adams"],
+        "answer": "George Washington"
+      }
+    ]
+  },
+  {
+    "id": "hist2",
+    "title": "Ancient Rome",
+    "description": "Emperors, gladiators, and the empire.",
+    "category": "History",
+    "questions": [
+      {
+        "id": "ar1",
+        "question": "Who was the first Emperor of Rome?",
+        "options": ["Julius Caesar", "Augustus", "Nero", "Trajan"],
+        "answer": "Augustus"
+      },
+      {
+        "id": "ar2",
+        "question": "Which language was spoken in Ancient Rome?",
+        "options": ["Greek", "Latin", "Italian", "French"],
+        "answer": "Latin"
+      }
+    ]
+  },
+  {
+    "id": "hist3",
+    "title": "Industrial Revolution",
+    "description": "The era of machines and factories.",
+    "category": "History",
+    "questions": [
+      {
+        "id": "ir1",
+        "question": "Where did the Industrial Revolution begin?",
+        "options": ["USA", "Germany", "France", "Great Britain"],
+        "answer": "Great Britain"
+      },
+      {
+        "id": "ir2",
+        "question": "Which invention powered the early Industrial Revolution?",
+        "options": ["Steam Engine", "Electricity", "Internal Combustion", "Nuclear Power"],
+        "answer": "Steam Engine"
+      }
+    ]
+  },
+  {
+    "id": "5",
+    "title": "General Science",
+    "description": "Basic science questions for everyone.",
+    "category": "Science",
+    "questions": [
+      {
+        "id": "gsq1",
+        "question": "What is the chemical symbol for water?",
+        "options": ["H2O", "CO2", "O2", "NaCl"],
+        "answer": "H2O"
+      },
+      {
+        "id": "gsq2",
+        "question": "What gas do plants absorb from the atmosphere?",
+        "options": ["Oxygen", "Carbon Dioxide", "Nitrogen", "Hydrogen"],
+        "answer": "Carbon Dioxide"
+      }
+    ]
+  }
+]
