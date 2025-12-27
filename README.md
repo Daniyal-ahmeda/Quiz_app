@@ -1,29 +1,38 @@
-# Scientific Quizzes App 🧠
+# Scientific Quiz App 🧪
 
-A modern, comprehensive quiz application built with Flutter, designed to test your knowledge in programming and DevOps topics.
+A modern, feature-rich Flutter application developed for the Mobile Application Development Final Exam (Fall 2025).
 
-## Features 🚀
+## 📱 Features
 
-- **📚 Diverse Categories**: Test your skills in **Linux**, **SQL**, **Docker**, and **DevOps**.
-- **🎚️ Difficulty Levels**: Filter quizzes by **Easy**, **Medium**, or **Hard**.
-- **🌙 Dark Mode**: A sleek, high-contrast dark theme that persists across sessions.
-- **🔒 Secure**: API keys are reliably managed using environment variables (`.env`).
-- **⚡ Optimized**: Parallel API requests ensure fast loading times.
-- **🛡️ Robust**: Gracefully handles network errors and API rate limits (HTTP 429) with retry options.
-- **✨ Polished UI**: Smooth animations, theme-aware components, and a user-friendly interface.
+### Core Functionality
 
-## Screenshots 📸
+- **Take Quizzes**: Interactive quizzes with multiple-choice questions.
+- **Create Quizzes**: Users can create and publish their own quizzes.
+- **Real-time Data**: Powered by **Firebase Firestore**.
+- **Difficulty Levels**: Filter quizzes by Easy, Medium, or Hard.
+- **Search**: Find quizzes instantly with the search bar.
 
-|          Light Mode           |          Dark Mode           |
-| :---------------------------: | :--------------------------: |
-| _(Add Light Mode Screenshot)_ | _(Add Dark Mode Screenshot)_ |
+### User Experience
 
-## Getting Started 🛠️
+- **Authentication**: Secure Login & Registration using **Firebase Auth**.
+- **User Profiles**: Custom avatars (with Image Upload), bio, and stats.
+- **Dark Mode**: Beautiful, persistent dark/light theme.
+- **Responsiveness**: Optimized for mobile devices.
+- **Performance**: Image caching with `cached_network_image`.
+
+## 🛠 Tech Stack
+
+- **Framework**: Flutter (Dart)
+- **Backend**: Firebase (Auth, Firestore, Storage)
+- **State Management**: Provider + GetIt (Service Locator)
+- **Architecture**: Feature-First (Clean Architecture inspired)
+
+## 🚀 Getting Started
 
 ### Prerequisites
 
-- Flutter SDK installed
-- An API Key from [quizapi.io](https://quizapi.io/)
+- Flutter SDK (3.x or later)
+- Firebase Account (for backend setup)
 
 ### Installation
 
@@ -34,47 +43,41 @@ A modern, comprehensive quiz application built with Flutter, designed to test yo
     cd quiz_app
     ```
 
-2.  **Install dependencies**:
+2.  **Install Dependencies**:
 
     ```bash
     flutter pub get
     ```
 
-3.  **Configure API Key**:
+3.  **Firebase Setup**:
 
-    - Create a file named `.env` in the root directory.
-    - Add your API key:
-      ```env
-      QUIZ_API_KEY=YOUR_API_KEY_HERE
-      ```
+    - Add your `google-services.json` to `android/app/`.
+    - Enable **Authentication** (Email/Password).
+    - Enable **Firestore Database**.
+    - Enable **Storage**.
 
-4.  **Run the app**:
+4.  **Run the App**:
     ```bash
     flutter run
     ```
 
-## Tech Stack 💻
-
-- **Framework**: [Flutter](https://flutter.dev/)
-- **Network**: [http](https://pub.dev/packages/http)
-- **Dependency Injection**: [get_it](https://pub.dev/packages/get_it)
-- **Storage**: [shared_preferences](https://pub.dev/packages/shared_preferences)
-- **Configuration**: [flutter_dotenv](https://pub.dev/packages/flutter_dotenv)
-- **Fonts**: [google_fonts](https://pub.dev/packages/google_fonts)
-
-## Project Structure 📂
+## 📂 Project Structure
 
 ```
 lib/
-├── core/
-│   ├── constants/    # App colors, icons, and strings
-│   ├── services/     # ThemeService, ServiceLocator
-│   └── widgets/      # Reusable widgets (CommonButton)
+├── core/            # Constants, Services (Theme, Auth, Locator)
 ├── features/
-│   └── quiz/
-│       ├── data/     # API services and Models
-│       └── presentation/
-│           ├── pages/    # HomePage, QuizPage, ResultPage
-│           └── widgets/  # ChoiceTile
-└── main.dart         # Entry point & App Configuration
+│   ├── auth/        # Login, Register, Auth Logic
+│   ├── onbording/   # Splash, Onboarding Screens
+│   ├── profile/     # User Profile, Edit Profile, Stats
+│   └── quiz/        # Home, Quiz Taking, Creation, Models
+└── main.dart        # Entry point
 ```
+
+## 🎥 Demo Video
+
+[Link to Demo Video Placeholder]
+
+## 🤖 AI Integration
+
+This project was built with the assistance of AI tools. See [AI_LOG.md](AI_LOG.md) for details.

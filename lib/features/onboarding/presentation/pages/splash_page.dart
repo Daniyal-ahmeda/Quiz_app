@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:quiz_app/core/constants/app_colors.dart';
 import 'package:quiz_app/features/onboarding/presentation/pages/onboarding_page.dart';
+import 'package:quiz_app/features/quiz/presentation/pages/home_page.dart';
+import 'package:quiz_app/core/services/service_locator.dart';
+import 'package:quiz_app/features/auth/data/auth_service.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -16,10 +19,18 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     super.initState();
     Timer(const Duration(seconds: 3), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const OnboardingPage()),
-      );
+      final authService = locator<AuthService>();
+      if (authService.isAuthenticated) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomePage()),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const OnboardingPage()),
+        );
+      }
     });
   }
 

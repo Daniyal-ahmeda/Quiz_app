@@ -7,6 +7,7 @@ class Quiz {
   String description;
   String category;
   List<Question> questions;
+  DateTime createdAt;
 
   Quiz({
     String? id,
@@ -14,7 +15,9 @@ class Quiz {
     required this.description,
     required this.category,
     required this.questions,
-  }) : id = id ?? _generateId();
+    DateTime? createdAt,
+  })  : id = id ?? _generateId(),
+        createdAt = createdAt ?? DateTime.now();
 
   factory Quiz.fromJson(Map<String, dynamic> json) {
     return Quiz(
@@ -24,7 +27,20 @@ class Quiz {
       category: json['category'] ?? 'General',
       questions:
           (json['questions'] as List).map((q) => Question.fromJson(q)).toList(),
+      createdAt:
+          json['createdAt'] != null ? DateTime.parse(json['createdAt']) : null,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'description': description,
+      'category': category,
+      'questions': questions.map((q) => q.toJson()).toList(),
+      'createdAt': createdAt.toIso8601String(),
+    };
   }
 
   static String _generateId() {

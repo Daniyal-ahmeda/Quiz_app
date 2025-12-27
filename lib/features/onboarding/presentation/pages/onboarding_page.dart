@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:quiz_app/core/constants/app_colors.dart';
 import 'package:quiz_app/core/utils/screen_utils.dart';
 import 'package:quiz_app/core/widgets/common_button.dart';
-import 'package:quiz_app/features/quiz/presentation/pages/home_page.dart';
+import 'package:quiz_app/features/auth/presentation/pages/login_page.dart';
 
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({super.key});
@@ -99,7 +99,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const HomePage()),
+                            builder: (context) => const LoginPage()),
                       );
                     },
                   ),

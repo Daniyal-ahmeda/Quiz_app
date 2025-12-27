@@ -57,6 +57,15 @@ class Question {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'question': question,
+      'options': options,
+      'answer': answer,
+    };
+  }
+
   static String _generateId() {
     return DateTime.now().millisecondsSinceEpoch.toString() +
         Random().nextInt(1000).toString();

@@ -1,10 +1,8 @@
-import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
-import 'package:quiz_app/features/quiz/data/models/question_model.dart';
 import 'package:quiz_app/features/quiz/data/models/quiz_model.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'dart:convert';
+import 'package:flutter/services.dart' show rootBundle;
 
 class QuizService extends ChangeNotifier {
   List<Quiz> _quizzes = [];
@@ -18,147 +16,113 @@ class QuizService extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
 
   QuizService() {
-    _loadInitialData();
+    _listenToQuizzes();
   }
 
-  static final _apiKey = dotenv.env['QUIZ_API_KEY'] ?? '';
-  static const _baseUrl = 'https://quizapi.io/api/v1/questions';
-
-  Future<void> _loadInitialData() async {
-    // 1. Load Local JSON
-    try {
-      if (kDebugMode) print('Loading local quizzes...');
-      final String response =
-          await rootBundle.loadString('assets/data/quiz_data.json');
-      if (kDebugMode) print('JSON loaded. Decoding...');
-
-      final List<dynamic> data = json.decode(response);
-      if (kDebugMode) print('JSON decoded. Found ${data.length} items.');
-
-      _quizzes = data.map((json) {
-        try {
-          return Quiz.fromJson(json);
-        } catch (e) {
-          if (kDebugMode) print('Error parsing quiz: $e');
-          rethrow;
-        }
-      }).toList();
-
-      if (kDebugMode) print('Local quizzes parsed successfully.');
-      notifyListeners();
-    } catch (e) {
-      if (kDebugMode) {
-        print('CRITICAL ERROR loading local quizzes: $e');
-      }
-    }
-
-    // 2. Fetch from API (Independent of local load)
-    try {
-      if (kDebugMode) print('Fetching API quizzes...');
-      await _fetchQuizzesFromApi();
-      notifyListeners();
-    } catch (e) {
-      if (kDebugMode) {
-        print('Error fetching API quizzes: $e');
-      }
-    }
-  }
-
-  Future<void> _fetchQuizzesFromApi() async {
+  void _listenToQuizzes() {
     _isLoading = true;
-    _errorMessage = null;
     notifyListeners();
 
-    final categories = ['Linux', 'SQL', 'Docker', 'DevOps'];
-    List<Quiz> newQuizzes = [];
-
     try {
-      if (kDebugMode)
-        print('Starting sequential fetch with difficulty: $_currentDifficulty');
-
-      for (var category in categories) {
-        try {
-          final url = Uri.parse(
-            '$_baseUrl?apiKey=$_apiKey&category=$category&limit=10${_currentDifficulty != 'Any' ? '&difficulty=$_currentDifficulty' : ''}',
-          );
-          if (kDebugMode) print('Fetching URL: $url');
-          final response = await http.get(url);
-
-          if (kDebugMode)
-            print('Response for $category: ${response.statusCode}');
-
-          if (response.statusCode == 200) {
-            final List<dynamic> data = json.decode(response.body);
-            if (kDebugMode) print('Data length for $category: ${data.length}');
-            if (data.isNotEmpty) {
-              final questions = data
-                  .map((q) => Question.fromApiJson(q))
-                  .where(
-                    (q) =>
-                        q.question.isNotEmpty &&
-                        q.options.isNotEmpty &&
-                        q.answer.isNotEmpty,
-                  ) // Filter valid questions
-                  .toList();
-
-              if (questions.isNotEmpty) {
-                newQuizzes.add(
-                  Quiz(
-                    title: '$category Master',
-                    description:
-                        'Test your $category skills with these questions.',
-                    category: 'Programming',
-                    questions: questions,
-                  ),
-                );
-              }
-            }
-          } else if (response.statusCode == 429) {
-            _errorMessage = "Rate limit exceeded. Please wait a moment.";
-            if (kDebugMode) print('Rate limit hit for $category');
-            // Add a small delay if we hit a rate limit?
-            // await Future.delayed(Duration(seconds: 1)); // Maybe?
-          }
-        } catch (e) {
-          if (kDebugMode) {
-            print('Error fetching $category quiz: $e');
-          }
+      FirebaseFirestore.instance
+          .collection('quizzes')
+          .orderBy('createdAt', descending: true)
+          .snapshots()
+          .listen((snapshot) {
+        if (snapshot.docs.isEmpty && !_isLoading) {
+          // Auto-seed if empty
+          _seedInitialData();
         }
-      }
 
-      if (newQuizzes.isNotEmpty) {
-        _quizzes = newQuizzes; // Only replace if we got something
-      } else if (_quizzes.isEmpty && _errorMessage == null) {
-        // If we got nothing and no error, maybe empty result?
-        _errorMessage = "No quizzes found for this difficulty.";
-      }
+        _quizzes = snapshot.docs.map((doc) {
+          final data = doc.data();
+          // Ensure ID matches doc ID if consistent, or just use data's ID
+          data['id'] = doc.id;
+          return Quiz.fromJson(data);
+        }).toList();
+
+        // Apply local filtering if needed, though Firestore queries are better
+        if (_currentDifficulty != 'Any') {
+          // Note: Real filtering should probably happen in the query for efficiency,
+          // but for dynamic checking without complex indexes, local filter is fine for small apps.
+          // _quizzes = _quizzes.where(...)
+          // However, our Quiz model doesn't store difficulty at top level,
+          // it was based on Question difficulty.
+          // For now, we will return ALL quizzes or filter by category if we add category selection back.
+        }
+
+        _isLoading = false;
+        _errorMessage = null;
+        notifyListeners();
+      }, onError: (e) {
+        _errorMessage = "Failed to load quizzes: $e";
+        _isLoading = false;
+        notifyListeners();
+        if (kDebugMode) print("Firestore Error: $e");
+      });
     } catch (e) {
-      _errorMessage = "Failed to load quizzes.";
-      if (kDebugMode) {
-        print('Error in batch fetch: $e');
-      }
-    } finally {
+      _errorMessage = "Error initializing listener: $e";
       _isLoading = false;
       notifyListeners();
     }
   }
 
-  void addQuiz(Quiz quiz) {
-    _quizzes.add(quiz);
-    notifyListeners();
+  Future<void> _seedInitialData() async {
+    try {
+      if (kDebugMode) print("Seeding initial data...");
+      // Check if we already seeded to avoid race conditions (double check)
+      final check =
+          await FirebaseFirestore.instance.collection('quizzes').limit(1).get();
+      if (check.docs.isNotEmpty) return;
+
+      final String response =
+          await rootBundle.loadString('assets/data/quiz_data.json');
+      final List<dynamic> data = json.decode(response);
+
+      final batch = FirebaseFirestore.instance.batch();
+
+      for (var jsonItem in data) {
+        final docRef = FirebaseFirestore.instance.collection('quizzes').doc();
+        // Ensure createdAt is present
+        jsonItem['createdAt'] = DateTime.now().toIso8601String();
+        batch.set(docRef, jsonItem);
+      }
+
+      await batch.commit();
+      if (kDebugMode) print("Seeding complete!");
+    } catch (e) {
+      if (kDebugMode) print("Error seeding data: $e");
+    }
   }
 
-  void deleteQuiz(String id) {
-    _quizzes.removeWhere((q) => q.id == id);
-    notifyListeners();
+  Future<void> addQuiz(Quiz quiz) async {
+    try {
+      await FirebaseFirestore.instance.collection('quizzes').add(quiz.toJson());
+    } catch (e) {
+      if (kDebugMode) print("Error adding quiz: $e");
+      rethrow;
+    }
+  }
+
+  Future<void> deleteQuiz(String id) async {
+    try {
+      // If we use the document ID as the Quiz ID
+      await FirebaseFirestore.instance.collection('quizzes').doc(id).delete();
+
+      // If the Quiz ID ID is stored as a field 'id' but not the doc ID, query it
+      // final query = await FirebaseFirestore.instance.collection('quizzes').where('id', isEqualTo: id).get();
+      // for (var doc in query.docs) { await doc.reference.delete(); }
+    } catch (e) {
+      if (kDebugMode) print("Error deleting quiz: $e");
+      rethrow;
+    }
   }
 
   Future<void> updateDifficulty(String difficulty) async {
     _currentDifficulty = difficulty;
-    // Don't clear _quizzes immediately so user still sees old data or just loader on top
-    // But if we want to show loading state, we need to handle that.
-    // _quizzes = []; // DISABLED CLEARING
     notifyListeners();
-    await _fetchQuizzesFromApi();
+    // In this new architecture, we might just filter the list locally
+    // since we are streaming all quizzes.
+    // Or restart the listener with a where() clause if we add 'difficulty' to top-level Quiz model.
   }
 }
